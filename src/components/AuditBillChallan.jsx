@@ -35,7 +35,7 @@ export default function AuditBillChallan({ items, isAlreadyBilled, onChallanClea
     <div className="p-4 bg-slate-50/50 space-y-3">
       
       {/* Table Column Labels */}
-      <div className="flex justify-between items-center px-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+      <div className="flex justify-between items-center px-1 text-[14px] font-bold text-slate-400 uppercase tracking-wider">
         <span>Brand Name</span>
         <div className="flex items-center gap-x-8 pr-2">
           <span>Load</span>

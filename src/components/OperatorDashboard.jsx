@@ -59,9 +59,9 @@ export default function OperatorDashboard() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 flex flex-col justify-start max-w-md mx-auto border-x border-slate-200/80 shadow-sm">
+    <div className="w-full min-h-screen bg-slate-50 flex flex-col justify-start max-w-md mx-auto border-x border-slate-200/80">
       
-      <div className="sticky top-0 bg-[rgb(63,42,199)] border-b border-slate-200/80 px-4 py-4 z-10 shadow-xs">
+      <div className="sticky top-0 bg-[rgb(63,42,199)] border-b border-slate-200/80 px-8 py-4 z-10 w-full">
         <h2 className="text-xl font-bold text-[rgb(255,255,255)] tracking-wider">Operator Desk</h2>
       </div>
 
@@ -89,7 +89,7 @@ export default function OperatorDashboard() {
               <button
                 type="button"
                 onClick={() => toggleAccordion(bill._id)}
-                className={`w-full px-4 py-4 flex items-center justify-between text-left transition-colors duration-150 ${
+                className={`w-full px-8 py-4 flex items-center justify-between text-left transition-colors duration-150 ${
                   isAlreadyBilled ? 'bg-emerald-50/10' : isTemporaryChecked ? 'bg-emerald-50/5' : 'bg-white hover:bg-slate-50/40'
                 }`}
               >
