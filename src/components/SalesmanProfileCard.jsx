@@ -3,8 +3,8 @@ import React from 'react';
 export default function SalesmanProfileCard({ onNavigateToBilling, onNavigateToCash }) {
   // Hardcoded for structural visual testing inside App.jsx
   const sampleSalesman = {
-    name: "Motupalli Sarath",
-    salesmanId: "CHV",
+    name: "Rajesh",
+    salesmanId: "SRJ",
     email: "sarath.m@manikyapriya.com",
     broughtForwardDebt: 313000
   };
