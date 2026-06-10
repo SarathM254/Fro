@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import BillingEntryForm from './BillingEntryForm';
 import BillingPreviewSheet from './BillingPreviewSheet';
 
-export default function SalesmanBillingScreen() {
+export default function SalesmanBillingScreen({ onBack }) {
     const mockCategories = [
         {
             id: "cat_1",
@@ -149,7 +149,7 @@ export default function SalesmanBillingScreen() {
         if (currentStep === 2) {
             setCurrentStep(1); // Drop back from summary review layer onto interactive data entry matrix
         } else {
-            console.log("Navigating cleanly back to Dashboard Index layout route.");
+            if (onBack) onBack();
         }
     };
 

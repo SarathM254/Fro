@@ -65,7 +65,7 @@ export default function SalesmanStatementHistory() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 pb-8 bg-slate-50">
+    <div className="w-full max-w-md pb-8 bg-slate-50">
       {/* Wrapper Layout Panel */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
         

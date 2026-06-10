@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 const DENOMINATIONS = [500, 200, 100, 50, 20, 10];
 
-export default function CashPaymentSettlement({ activeUser, onSettlementSuccess }) {
+export default function CashPaymentSettlement({ activeUser, onSettlementSuccess, onBack }) {
   
   // Initialize react-hook-form with structured object layouts
   const { register, handleSubmit, watch, setValue } = useForm({
@@ -72,9 +72,24 @@ export default function CashPaymentSettlement({ activeUser, onSettlementSuccess 
     <div className="w-full min-h-screen max-w-md mx-auto bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between">
       
       {/* Component Title Header */}
-      <div className="p-5 border-b border-slate-100 bg-white">
-        <h2 className="text-xl font-bold text-slate-900 tracking-tight">End of Day Cashout</h2>
-      </div>
+      <div className="sticky top-0 bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center gap-x-4 z-10 shadow-xs">
+                <button
+                    type="button"
+                    onClick={onBack}
+                    className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors duration-150 shrink-0"
+                    aria-label="Navigate Back"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                </button>
+                <div>
+                    <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                        Cash Payment
+                    </h2>
+                </div>
+            </div>
+      
 
       {/* Core Matrix Workings Section */}
       <div className="p-5 space-y-5 flex-1 overflow-y-auto">
