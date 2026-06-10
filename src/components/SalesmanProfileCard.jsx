@@ -14,7 +14,7 @@ export default function SalesmanProfileCard() {
   symb+=sampleSalesman.salesmanId[1];
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 bg-slate-50">
+    <div className="w-full max-w-md p-4 bg-slate-50">
       {/* Container Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
         
