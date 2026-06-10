@@ -1,52 +1,14 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React from 'react';
 
-export default function BillingEntryForm({ onPreviewSubmit, mockCategories, ratesMapping, calculateTotalBillValue }) {
-  // State tracking which active accordion index values are currently open
-  const [expandedCategories, setExpandedCategories] = useState({});
-
-  const { register, handleSubmit, watch, setValue } = useForm({
-    defaultValues: mockCategories.reduce((acc, cat) => {
-      cat.brands.forEach(b => { acc[b.id] = ""; });
-      return acc;
-    }, {})
-  });
-
-  // Watch input states reactively to stream value changes straight to the parent listener functions
-  const formValues = watch();
-
-  const toggleCategory = (id) => {
-    setExpandedCategories(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  /*
-    CRITICAL FEATURE IMPLEMENTATION: LIVE CONTEXT-AWARE INTEGER ZERO SANITIZATION
-    Ensures that when field keys are selected, an entry like ".5" is immediately padded into "0.5".
-    It forces strict 2 decimal limits via numerical regex patterns and prevents characters from breaking numbers.
-  */
-  const handleBlurSanitization = (event, fieldId) => {
-    let rawValue = event.target.value.trim();
-    if (!rawValue) return;
-
-    // Automatically append leading zero if salesman inputs an isolated decimal block point like ".5"
-    if (rawValue.startsWith('.')) {
-      rawValue = '0' + rawValue;
-    }
-
-    const numericValue = parseFloat(rawValue);
-    if (!isNaN(numericValue)) {
-      // Strips entries down to enforce a clean 2 decimal place baseline maximum boundary
-      const sanitizedFixed = parseFloat(numericValue.toFixed(2));
-      // Re-injects the safe, formatted string safely back into the active react-hook-form node handler
-      setValue(fieldId, sanitizedFixed.toString());
-    }
-  };
-
-  // Passes the active, localized form values back up to the parent wrapper for real-time running calculations
-  React.useEffect(() => {
-    calculateTotalBillValue(formValues);
-  }, [formValues, calculateTotalBillValue]);
-
+export default function BillingEntryForm({ 
+  register, 
+  mockCategories, 
+  expandedCategories, 
+  toggleCategory, 
+  handleBlurSanitization,
+  handleSubmit,
+  onPreviewSubmit
+}) {
   return (
     <form onSubmit={handleSubmit(onPreviewSubmit)} className="flex-1 p-4 space-y-3 overflow-y-auto">
       {mockCategories.map((category) => {

@@ -1,13 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import BillingEntryForm from './BillingEntryForm';
 import BillingPreviewSheet from './BillingPreviewSheet';
 
 export default function SalesmanBillingScreen() {
-    // Step workflow management: 1 = Form Input Screen, 2 = Summary Review Screen
-    const [currentStep, setCurrentStep] = useState(1);
-    const [runningFormValues, setRunningFormValues] = useState({});
-    const [finalPreviewPayload, setFinalPreviewPayload] = useState([]);
-
     const mockCategories = [
         {
             id: "cat_1",
@@ -74,10 +70,39 @@ export default function SalesmanBillingScreen() {
         b_21: 220.00, b_22: 230.00, b_23: 250.00, b_24: 210.00, b_25: 260.00
     };
 
-    // Wrapped inside a useCallback hook to prevent accidental infant field re-render loops
-    const handleFormValuesSynchronization = useCallback((latestValues) => {
-        setRunningFormValues(latestValues);
-    }, []);
+    const { register, handleSubmit, watch, setValue } = useForm({
+      defaultValues: mockCategories.reduce((acc, cat) => {
+        cat.brands.forEach(b => { acc[b.id] = ""; });
+        return acc;
+      }, {})
+    });
+
+    // Constantly monitors input metrics inside the parent context memory safely
+    const runningFormValues = watch();
+
+    // Step workflow management: 1 = Form Input Screen, 2 = Summary Review Screen
+    const [currentStep, setCurrentStep] = useState(1);
+    const [finalPreviewPayload, setFinalPreviewPayload] = useState([]);
+
+    const [expandedCategories, setExpandedCategories] = useState({});
+    const toggleCategory = (id) => {
+      setExpandedCategories(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const handleBlurSanitization = (event, fieldId) => {
+      let rawValue = event.target.value.trim();
+      if (!rawValue) return;
+
+      if (rawValue.startsWith('.')) {
+        rawValue = '0' + rawValue;
+      }
+
+      const numericValue = parseFloat(rawValue);
+      if (!isNaN(numericValue)) {
+        const sanitizedFixed = parseFloat(numericValue.toFixed(2));
+        setValue(fieldId, sanitizedFixed.toString());
+      }
+    };
 
     /*
       CRITICAL FEATURE IMPLEMENTATION: REAL-TIME LEDGER VALUE AGGREGATION & WHOLE NUMBER CEILING LOCK
@@ -85,15 +110,15 @@ export default function SalesmanBillingScreen() {
       (e.g., 1230.25), the total is cleanly forced upwards to the next absolute whole number ceiling integer (1231).
     */
     const compiledCeiledTotalValue = () => {
-        let rawSum = 0;
-        Object.keys(runningFormValues).forEach(brandId => {
-            const quantity = parseFloat(runningFormValues[brandId]);
-            if (!isNaN(quantity) && quantity > 0) {
-                const structuralRate = ratesMapping[brandId] || 0;
-                rawSum += quantity * structuralRate;
-            }
-        });
-        return Math.ceil(rawSum);
+      let rawSum = 0;
+      Object.keys(runningFormValues).forEach(brandId => {
+        const quantity = parseFloat(runningFormValues[brandId]);
+        if (!isNaN(quantity) && quantity > 0) {
+          const structuralRate = ratesMapping[brandId] || 0;
+          rawSum += quantity * structuralRate;
+        }
+      });
+      return Math.ceil(rawSum);
     };
 
     const processFormPreviewStep = (data) => {
@@ -129,7 +154,7 @@ export default function SalesmanBillingScreen() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-slate-50 flex flex-col justify-between max-w-md mx-auto border-x border-slate-200/80 shadow-sm">
+        <div className="w-full min-h-screen bg-slate-50 flex flex-col justify-between max-w-md rounded-2xl mx-auto border-x border-slate-200/80 shadow-sm">
 
             {/* FIXED PERMANENT UNIVERSAL HEADER LAYER */}
             <div className="sticky top-0 bg-white border-b border-slate-200/80 px-4 py-3.5 flex items-center gap-x-4 z-10 shadow-xs">
@@ -152,25 +177,17 @@ export default function SalesmanBillingScreen() {
 
             {/* DYNAMIC CONTENT INJECTION BODY LAYER */}
             {currentStep === 1 ? (
-                <BillingEntryForm
-                    onPreviewSubmit={processFormPreviewStep}
-                    mockCategories={mockCategories}
-                    ratesMapping={ratesMapping}
-                    calculateTotalBillValue={handleFormValuesSynchronization}
-                />
+              <BillingEntryForm 
+                register={register}
+                mockCategories={mockCategories}
+                expandedCategories={expandedCategories}
+                toggleCategory={toggleCategory}
+                handleBlurSanitization={handleBlurSanitization}
+                handleSubmit={handleSubmit}
+                onPreviewSubmit={processFormPreviewStep}
+              />
             ) : (
-                <div className="flex-1 p-4 overflow-y-auto">
-                    {currentStep === 1 ? (
-                        <BillingEntryForm
-                            onPreviewSubmit={processFormPreviewStep}
-                            mockCategories={mockCategories}
-                            ratesMapping={ratesMapping}
-                            calculateTotalBillValue={handleFormValuesSynchronization}
-                        />
-                    ) : (
-                        <BillingPreviewSheet finalPreviewPayload={finalPreviewPayload} />
-                    )}
-                </div>
+              <BillingPreviewSheet finalPreviewPayload={finalPreviewPayload} />
             )}
 
             {/* FIXED PERSISTENT BOTTOM TOTAL METRICS BLOCK */}
